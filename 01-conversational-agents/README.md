@@ -27,12 +27,12 @@ Agents that interact with users in real time through a chat or query interface. 
 | Sample | Vertical | Complexity | AgentCore features |
 |--------|----------|------------|-------------------|
 | [A2A-multi-agent-incident-response](./A2A-multi-agent-incident-response/) | IT / DevOps | Advanced | Runtime, Gateway, Memory, A2A using Strands + OpenAI Agents + Google ADK |
-| [AWS-operations-agent](./AWS-operations-agent/) | Cloud Operations | Advanced | Runtime, Gateway, Memory, Policy, Observability; built with Strands, ADK, and OpenAI Agents SDK |
-| [customer-support-assistant-vpc](./customer-support-assistant-vpc/) | Retail / E-commerce | Intermediate | Runtime, Gateway deployed inside a VPC with private endpoints |
+| [AWS-operations-agent](./AWS-operations-agent/) | Cloud Operations | Advanced | Runtime, Gateway, Memory, Identity (Okta), Observability; two Strands runtimes side by side, a DIY FastAPI one and a BedrockAgentCoreApp (SDK) one |
+| [customer-support-assistant-vpc](./customer-support-assistant-vpc/) | Retail / E-commerce | Intermediate | Runtime, Gateway, Identity (Cognito M2M) deployed inside a VPC with private endpoints; Aurora PostgreSQL, DynamoDB, and Lambda tools reached over MCP |
 | [deep-research-agent](./deep-research-agent/) | Research / Q&A | Intermediate | Runtime, Gateway (Web Search); iterative Plan → Search → Reflect → Synthesize loop with auto-provisioning |
-| [device-management-agent](./device-management-agent/) | IoT / Smart Home | Intermediate | Runtime, Gateway, Policy, Identity (Cognito); React frontend |
+| [device-management-agent](./device-management-agent/) | IoT / Smart Home | Intermediate | Runtime, Gateway, Identity (Cognito), Observability; FastAPI and WebSocket chat frontend |
 | [episodic-memory-claims-agent](./episodic-memory-claims-agent/) | Insurance | Advanced | Runtime, Memory (episodic), Identity (Cognito); Strands Graph with trust-filtered retrieval of human adjuster decisions |
-| [finance-personal-assistant](./finance-personal-assistant/) | Personal Finance | Beginner | Gateway, Policy; notebook-based |
+| [finance-personal-assistant](./finance-personal-assistant/) | Personal Finance | Beginner | Runtime, Identity (Cognito), Bedrock Guardrails; notebook-based workshop in three labs |
 | [healthcare-appointment-agent](./healthcare-appointment-agent/) | Healthcare | Intermediate | Runtime, Gateway, Policy, Observability; FHIR R4 via HealthLake |
 | [lakehouse-agent](./lakehouse-agent/) | Data and Analytics | Advanced | Runtime, Gateway, Memory, Policy; OAuth row-level security over S3 Tables and Athena |
 | [market-trends-agent](./market-trends-agent/) | Financial Services | Advanced | Runtime, Memory, Browser, Evaluations, Optimization; personalized broker investment assistant |

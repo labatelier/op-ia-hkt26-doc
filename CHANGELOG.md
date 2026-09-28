@@ -5,6 +5,15 @@ Documentation changes proposed by the documentation agent, newest first.
 This file is maintained automatically: an entry is prepended each time the agent
 opens a pull request. The agent never reviews or rewrites it.
 
+## 2026-09-28 13:27 UTC — run c09963cf
+
+Triggered by `push` on `main`, targeting `main`.
+
+Fix the conversational-agent tables, which credited samples with frameworks, frontends, identity providers and AgentCore features their code does not use, and list CHANGELOG.md and CONTRIBUTORS.md in the repository structure.
+
+- `01-conversational-agents/README.md` — documentation: framework, frontend and feature claims did not match the samples
+- `README.md` — documentation: sample descriptions and feature lists contradicted the code
+
 ## 2026-09-28 13:21 UTC — run 6e3795f1
 
 Triggered by `push` on `main`, targeting `main`.

@@ -11,12 +11,12 @@ Agents that interact with users in real time. Users authenticate through an iden
 | Sample | Description | Vertical | Key Features |
 |--------|-------------|----------|--------------|
 | [A2A-multi-agent-incident-response](./01-conversational-agents/A2A-multi-agent-incident-response/) | Multi-agent incident response implemented with three A2A frameworks | IT / DevOps | Runtime, Gateway, Memory, A2A (3 frameworks) |
-| [AWS-operations-agent](./01-conversational-agents/AWS-operations-agent/) | Intelligent AWS operations assistant with Okta authentication and comprehensive monitoring capabilities | Cloud Operations | Runtime, Gateway, Memory, Policy, Observability |
-| [customer-support-assistant-vpc](./01-conversational-agents/customer-support-assistant-vpc/) | Production-ready customer service agent with memory, knowledge base integration, and Google OAuth | Retail / E-commerce | Runtime, Gateway (VPC) |
+| [AWS-operations-agent](./01-conversational-agents/AWS-operations-agent/) | AWS operations assistant with Okta OAuth2 and 20+ read-only AWS tools reached through an MCP Gateway | Cloud Operations | Runtime, Gateway, Memory, Identity (Okta), Observability |
+| [customer-support-assistant-vpc](./01-conversational-agents/customer-support-assistant-vpc/) | Customer support agent deployed in a fully private VPC, with tools over Aurora PostgreSQL, DynamoDB, and Lambda | Retail / E-commerce | Runtime, Gateway, Identity (Cognito M2M), all inside a VPC |
 | [deep-research-agent](./01-conversational-agents/deep-research-agent/) | Deep research assistant with web search and runtime deployment | Research / Q&A | Gateway (Web Search), Runtime |
-| [device-management-agent](./01-conversational-agents/device-management-agent/) | IoT device management system with Cognito authentication and real-time monitoring | IoT / Smart Home | Runtime, Gateway, Policy, Identity (Cognito) |
+| [device-management-agent](./01-conversational-agents/device-management-agent/) | IoT device management system with Cognito authentication and real-time monitoring | IoT / Smart Home | Runtime, Gateway, Identity (Cognito), Observability |
 | [episodic-memory-claims-agent](./01-conversational-agents/episodic-memory-claims-agent/) | Multi-agent claims processing that learns from human adjuster decisions through episodic memory | Insurance | Runtime, Memory (episodic), Identity (Cognito) |
-| [finance-personal-assistant](./01-conversational-agents/finance-personal-assistant/) | Personal budget management with multi-agent workflows and guardrails | Personal Finance | Gateway, Policy |
+| [finance-personal-assistant](./01-conversational-agents/finance-personal-assistant/) | Personal budget management with multi-agent workflows and guardrails | Personal Finance | Runtime, Identity (Cognito), Bedrock Guardrails |
 | [healthcare-appointment-agent](./01-conversational-agents/healthcare-appointment-agent/) | FHIR-compliant healthcare appointment scheduling with patient data integration | Healthcare | Runtime, Gateway, Policy, Observability (FHIR R4) |
 | [lakehouse-agent](./01-conversational-agents/lakehouse-agent/) | Secure data lakehouse assistant with memory and row-level access controls | Data and Analytics | Runtime, Gateway, Memory, Policy (row-level security) |
 | [market-trends-agent](./01-conversational-agents/market-trends-agent/) | Financial market analysis with browser tools and memory integration | Financial Services | Runtime, Memory, Browser, Evaluations, Optimization |
@@ -77,7 +77,9 @@ Python linting is configured repository-wide in [pyproject.toml](./pyproject.tom
 ├── pyproject.toml                   # Repo-wide ruff configuration
 ├── MIGRATION.md                     # Starter Toolkit to AgentCore CLI migration guide
 ├── use-case-assessment.md           # Assessment and restructuring plan for the samples
+├── CHANGELOG.md                     # Log of changes to this repository
 ├── CONTRIBUTING.md
+├── CONTRIBUTORS.md
 └── CODE_OF_CONDUCT.md
 ```
 
