@@ -1,9 +1,18 @@
+"""Numeric codes used to describe errors and the fields they relate to."""
+
 from __future__ import annotations
 
 from enum import IntEnum
 
 
 class ErrorCode(IntEnum):
+    """Stable numeric identifier of an error condition.
+
+    Codes are grouped by range: ``1xxx`` for domain and validation problems,
+    ``2xxx`` for infrastructure problems and ``3xxx`` for configuration
+    problems.
+    """
+
     UNKNOWN = 1000
     INVALID_AMOUNT = 1001
     INVALID_KIND = 1002
@@ -20,6 +29,8 @@ class ErrorCode(IntEnum):
 
 
 class FieldCode(IntEnum):
+    """Identifier of the value a validation error points at."""
+
     AMOUNT = 1
     KIND = 2
     ACCOUNT = 3
@@ -28,6 +39,15 @@ class FieldCode(IntEnum):
 
 
 def is_retryable(code: int) -> bool:
+    """Tell whether an operation that failed with this code may be retried.
+
+    Args:
+        code: Numeric error code, normally the value of an :class:`ErrorCode`.
+
+    Returns:
+        ``True`` for the transient infrastructure codes ``TIMEOUT``,
+        ``UNAVAILABLE`` and ``THROTTLED``, ``False`` for every other code.
+    """
     return code in (
         ErrorCode.TIMEOUT.value,
         ErrorCode.UNAVAILABLE.value,
