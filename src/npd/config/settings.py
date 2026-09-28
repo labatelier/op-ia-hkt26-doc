@@ -1,3 +1,5 @@
+"""Non-production (NPD) settings, read from the ``HKT_*`` environment variables."""
+
 from __future__ import annotations
 
 from typing import Mapping, Optional
@@ -22,6 +24,12 @@ DEFAULT_THRESHOLD = Severity.DEBUG
 
 
 def npd_defaults() -> Mapping[int, int]:
+    """Return the per-field upper bounds applied in the NPD environment.
+
+    Returns:
+        A mapping from :class:`~common.codes.FieldCode` value to the largest
+        accepted value, for the amount and the account fields.
+    """
     return {
         FieldCode.AMOUNT.value: 100000000,
         FieldCode.ACCOUNT.value: 1000000,
@@ -29,6 +37,24 @@ def npd_defaults() -> Mapping[int, int]:
 
 
 def _build(reader: EnvironmentReader) -> Settings:
+    """Assemble the NPD settings from environment variables.
+
+    Endpoint, region, timeout, retries and the strict flag are read from the
+    ``HKT_ENDPOINT``, ``HKT_REGION``, ``HKT_TIMEOUT``, ``HKT_RETRIES`` and
+    ``HKT_STRICT`` variables, each with a default. The environment is
+    ``Environment.NPD``, the log threshold is :data:`DEFAULT_THRESHOLD` and the
+    limits come from :func:`npd_defaults`.
+
+    Args:
+        reader: Reader over the environment variables.
+
+    Returns:
+        The settings of the NPD environment.
+
+    Raises:
+        ConfigError: With code ``BAD_CONFIG`` when the timeout or the retry
+            count is set but is not a valid integer.
+    """
     endpoint = reader.optional(KEY_ENDPOINT, LOCAL_ENDPOINT)
     region = reader.optional(KEY_REGION, REGION_DEFAULT)
     timeout = reader.as_int(KEY_TIMEOUT, DEFAULT_TIMEOUT)
@@ -47,6 +73,19 @@ def _build(reader: EnvironmentReader) -> Settings:
 
 
 def load_settings(source: Optional[Mapping[str, str]] = None) -> Settings:
+    """Load the NPD settings.
+
+    Args:
+        source: Mapping of environment variables to read from. The process
+            environment is used when the argument is ``None``.
+
+    Returns:
+        The settings of the NPD environment.
+
+    Raises:
+        ConfigError: With code ``BAD_CONFIG`` when a numeric variable cannot be
+            parsed.
+    """
     reader = EnvironmentReader(source)
     factory = SettingsFactory(_build)
     return factory.create(reader)

@@ -1,9 +1,13 @@
+"""Numeric identifiers of the events written to the structured log."""
+
 from __future__ import annotations
 
 from enum import IntEnum
 
 
 class Event(IntEnum):
+    """Identifier of a loggable event, stored in the ``event`` log field."""
+
     START = 1
     STOP = 2
     PROCESS = 3

@@ -1,3 +1,11 @@
+"""Literal vocabulary of the project, assembled from character codes.
+
+Three families of constants live here: the ``KEY_*`` names of the environment
+variables that configure an application, the ``FIELD_*`` keys used in log and
+payload dictionaries, and the ``EVENT_*`` labels together with the default
+region and endpoints.
+"""
+
 from __future__ import annotations
 
 from common.text import word, upper_word
