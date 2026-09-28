@@ -30,7 +30,9 @@ Agents that run without a user in the loop. They are triggered by system events 
 | [visa-b2b-account-payable-agent](./visa-b2b-account-payable-agent/) | B2B Payments | Advanced | Runtime, Gateway, Policy, Payments; automated invoice matching and ISO 20022 payment file generation via Visa B2B Connect |
 | [enterprise-web-intelligence-agent](./enterprise-web-intelligence-agent/) | Market Intelligence | Intermediate | Runtime, Browser; automated web scraping pipeline implemented twice (LangGraph and Strands) for comparison |
 | [intelligent-event-agent](./intelligent-event-agent/) | General | Beginner | Runtime, Memory, Gateway *(in development, no README yet)* |
+| [it-incident-response-agent](./it-incident-response-agent/) | IT operations / ITSM | Advanced | Runtime, Gateway + Policy (Cedar), Memory (SUMMARIZATION), Identity, Observability, Evaluations; SNS ticket to Runtime, Knowledge Base and Lambda tools behind one Gateway, optional Atlassian Remote MCP |
 | [multi-isv-orchestration](./multi-isv-orchestration/) | Enterprise CRM + ERP | Intermediate | Gateway (multi-target), Identity (Cognito inbound + CustomOauth2 outbound); Salesforce + SAP MCP Server through one Gateway for cross-system queries |
+| [receipts-intelligent-document-processing-agent](./receipts-intelligent-document-processing-agent/) | Finance / Expenses | Advanced | Runtime, Gateway, Memory, Policy (Cedar on tool input), Evaluations, Observability; S3 to EventBridge front door, extractor + validator agents, AppConfig-driven model degradation ladder on Bedrock 503 |
 | [gpu-music-production-agent](./gpu-music-production-agent/) | Media & Entertainment | Advanced | Runtime (EC2 capacity provider, GPU), Memory; a generative audio model runs on the instance GPU and three collocated agents hand files to each other over a shared EBS volume, with a computed verdict that escalates to human review |
 
 
@@ -38,3 +40,4 @@ Agents that run without a user in the loop. They are triggered by system events 
 
 - [01-conversational-agents](../01-conversational-agents/) - agents that interact with users in real time
 - [03-coding-assistants](../03-coding-assistants/) - developer tools and code generation
+- [04-data-analyst-conversational-assistant](../04-data-analyst-conversational-assistant/) - full-stack conversational sample covering every AgentCore feature
