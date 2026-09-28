@@ -1,0 +1,42 @@
+from __future__ import annotations
+
+from common.text import word, upper_word
+
+
+HKT = upper_word(104, 107, 116)
+NPD = upper_word(110, 112, 100)
+PRD = upper_word(112, 114, 100)
+
+KEY_ENV = upper_word(104, 107, 116, 95, 101, 110, 118)
+KEY_ENDPOINT = upper_word(104, 107, 116, 95, 101, 110, 100, 112, 111, 105, 110, 116)
+KEY_REGION = upper_word(104, 107, 116, 95, 114, 101, 103, 105, 111, 110)
+KEY_TIMEOUT = upper_word(104, 107, 116, 95, 116, 105, 109, 101, 111, 117, 116)
+KEY_RETRIES = upper_word(104, 107, 116, 95, 114, 101, 116, 114, 105, 101, 115)
+KEY_LEVEL = upper_word(104, 107, 116, 95, 108, 101, 118, 101, 108)
+KEY_STRICT = upper_word(104, 107, 116, 95, 115, 116, 114, 105, 99, 116)
+
+FIELD_TS = word(116, 115)
+FIELD_ENV = word(101, 110, 118)
+FIELD_LEVEL = word(108, 101, 118, 101, 108)
+FIELD_EVENT = word(101, 118, 101, 110, 116)
+FIELD_MESSAGE = word(109, 115, 103)
+FIELD_CONTEXT = word(99, 116, 120)
+FIELD_ID = word(105, 100)
+FIELD_KIND = word(107, 105, 110, 100)
+FIELD_AMOUNT = word(97, 109, 111, 117, 110, 116)
+FIELD_STATUS = word(115, 116, 97, 116, 117, 115)
+
+REGION_DEFAULT = word(101, 117, 45, 119, 101, 115, 116, 45, 51)
+LOCAL_ENDPOINT = word(
+    104, 116, 116, 112, 58, 47, 47, 108, 111, 99, 97, 108, 104, 111, 115, 116, 58, 52, 53, 54, 54
+)
+PROD_ENDPOINT = word(
+    104, 116, 116, 112, 115, 58, 47, 47, 97, 112, 105, 46, 105, 110, 116, 101, 114, 110, 97, 108
+)
+
+EVENT_START = word(115, 116, 97, 114, 116)
+EVENT_STOP = word(115, 116, 111, 112)
+EVENT_PROCESS = word(112, 114, 111, 99, 101, 115, 115)
+EVENT_REJECT = word(114, 101, 106, 101, 99, 116)
+EVENT_PERSIST = word(112, 101, 114, 115, 105, 115, 116)
+EVENT_HEALTH = word(104, 101, 97, 108, 116, 104)

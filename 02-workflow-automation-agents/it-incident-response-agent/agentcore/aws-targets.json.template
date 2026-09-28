@@ -1,7 +1,0 @@
-[
-  {
-    "name": "dev",
-    "account": "${CDK_DEFAULT_ACCOUNT}",
-    "region": "${AWS_REGION}"
-  }
-]
