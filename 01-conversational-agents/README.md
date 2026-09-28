@@ -31,6 +31,7 @@ Agents that interact with users in real time through a chat or query interface. 
 | [customer-support-assistant-vpc](./customer-support-assistant-vpc/) | Retail / E-commerce | Intermediate | Runtime, Gateway deployed inside a VPC with private endpoints |
 | [deep-research-agent](./deep-research-agent/) | Research / Q&A | Intermediate | Runtime, Gateway (Web Search); iterative Plan → Search → Reflect → Synthesize loop with auto-provisioning |
 | [device-management-agent](./device-management-agent/) | IoT / Smart Home | Intermediate | Runtime, Gateway, Policy, Identity (Cognito); React frontend |
+| [episodic-memory-claims-agent](./episodic-memory-claims-agent/) | Insurance | Advanced | Runtime, Memory (episodic), Identity (Cognito); Strands Graph with trust-filtered retrieval of human adjuster decisions |
 | [finance-personal-assistant](./finance-personal-assistant/) | Personal Finance | Beginner | Gateway, Policy; notebook-based |
 | [healthcare-appointment-agent](./healthcare-appointment-agent/) | Healthcare | Intermediate | Runtime, Gateway, Policy, Observability; FHIR R4 via HealthLake |
 | [lakehouse-agent](./lakehouse-agent/) | Data and Analytics | Advanced | Runtime, Gateway, Memory, Policy; OAuth row-level security over S3 Tables and Athena |
@@ -42,4 +43,4 @@ Agents that interact with users in real time through a chat or query interface. 
 ## See also
 
 - [02-workflow-automation-agents](../02-workflow-automation-agents/) - event-driven and background agents
-- [03-coding-assistants](../03-coding-assistants/) - developer tools and code generation
+- 03-coding-assistants - developer tools and code generation *(not in this repository yet)*
