@@ -4,7 +4,7 @@ End-to-end samples organized by agent type. Each folder maps to one of the three
 
 ## Categories
 
-### [01-conversational-agents](./01-conversational-agents/) 
+### [01-converssdfsfational-agents](./01-conversationsdfsdal-agents/) 
 
 Agents that interact with users in real time. Users authenticate through an identity provider, the agent maintains session and long-term memory per user, and responses stream back as the agent works. See the [category README](./01-conversational-agents/README.md) for the full list and a guide on which sample to start with.
 
