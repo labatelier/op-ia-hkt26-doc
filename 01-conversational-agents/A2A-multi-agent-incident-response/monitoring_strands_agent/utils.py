@@ -15,7 +15,16 @@ GATEWAY_PROVIDER_NAME = os.getenv("GATEWAY_PROVIDER_NAME")
 
 
 def get_gateway_url() -> str:
-    """Get gateway URL from SSM (cached)."""
+    """Read the AgentCore Gateway URL from SSM Parameter Store.
+
+    Returns:
+        str: Value of the ``/monitoragent/agentcore/gateway/gateway_url``
+            parameter.
+
+    Raises:
+        botocore.exceptions.ClientError: If the parameter cannot be read, for
+            example when it does not exist or the caller lacks permission.
+    """
 
     response = ssm.get_parameter(Name="/monitoragent/agentcore/gateway/gateway_url", WithDecryption=True)
     logger.info("Gateway URL loaded from SSM")
@@ -23,7 +32,23 @@ def get_gateway_url() -> str:
 
 
 def create_gateway_client(workload_token: str) -> MCPClient:
-    """Create MCP gateway client with OAuth2 authentication."""
+    """Create an MCP client for the AgentCore Gateway using OAuth2 (M2M).
+
+    The workload access token is exchanged for a gateway access token through the
+    credential provider named by the ``GATEWAY_PROVIDER_NAME`` environment
+    variable, and the token is attached as a bearer token to every MCP request.
+
+    Args:
+        workload_token: AgentCore workload identity token of the caller.
+
+    Returns:
+        MCPClient: A client configured for the gateway URL stored in SSM. The
+            caller is responsible for starting it.
+
+    Raises:
+        botocore.exceptions.ClientError: If the OAuth2 token exchange or the SSM
+            lookup fails.
+    """
     # Get OAuth2 access token for gateway
     response = agentcore_client.get_resource_oauth2_token(
         workloadIdentityToken=workload_token,

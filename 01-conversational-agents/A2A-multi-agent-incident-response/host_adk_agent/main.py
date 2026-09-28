@@ -23,6 +23,28 @@ root_agent = None
 
 @app.entrypoint
 async def call_agent(payload: dict, context):
+    """AgentCore runtime entrypoint for the Google ADK host agent.
+
+    On the first invocation the root agent is created and the agent cards of the
+    remote A2A sub-agents are resolved and yielded as the first event, so the
+    caller can display which agents are available. Every invocation then runs the
+    user prompt through the ADK runner and yields the runner events as they are
+    produced.
+
+    Args:
+        payload: Request body. Must contain a ``prompt`` key with the user query.
+        context: AgentCore request context. ``context.session_id`` and the
+            ``x-amzn-bedrock-agentcore-runtime-custom-actorid`` request header are
+            both required.
+
+    Yields:
+        The agent cards mapping (first invocation only) followed by the ADK
+        runner events for the current prompt.
+
+    Raises:
+        Exception: If the actor id or the session id is missing from the request.
+        KeyError: If ``payload`` does not contain a ``prompt`` field.
+    """
     global root_agent
 
     session_id = context.session_id

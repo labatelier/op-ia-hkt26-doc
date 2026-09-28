@@ -12,14 +12,35 @@ from bedrock_agentcore.identity.auth import requires_access_token
 
 
 def get_ssm_parameter(name: str, with_decryption: bool = True) -> str:
-    """Get parameter from AWS Systems Manager Parameter Store."""
+    """Get parameter from AWS Systems Manager Parameter Store.
+
+    Args:
+        name: Full name of the parameter, for example
+            ``/monitoragent/agentcore/runtime-id``.
+        with_decryption: Whether SecureString values should be decrypted.
+
+    Returns:
+        str: The parameter value.
+
+    Raises:
+        botocore.exceptions.ClientError: If the parameter does not exist or the
+            caller is not allowed to read it.
+    """
     ssm = boto3.client("ssm")
     response = ssm.get_parameter(Name=name, WithDecryption=with_decryption)
     return response["Parameter"]["Value"]
 
 
 def get_aws_info():
-    """Get AWS account ID and region from boto3 session."""
+    """Get AWS account ID and region from boto3 session.
+
+    Returns:
+        tuple: An ``(account_id, region)`` pair of strings.
+
+    Raises:
+        SystemExit: If the region cannot be determined or the STS call fails. The
+            error is printed and the process exits with status 1.
+    """
     try:
         boto_session = Session()
 
@@ -51,7 +72,27 @@ def invoke_endpoint(
     endpoint_name: str = "DEFAULT",
     stream: bool = True,
 ) -> Any:
-    """Invoke AgentCore runtime endpoint"""
+    """Invoke AgentCore runtime endpoint
+
+    The response is printed to stdout as it arrives: in streaming mode the text
+    deltas of ``contentBlockDelta`` events are printed incrementally, otherwise
+    the whole body is printed at once. Nothing is returned.
+
+    Args:
+        agent_arn: ARN of the AgentCore runtime to invoke.
+        payload: Request body. A JSON string is parsed, any other value is sent as
+            is, and a non-JSON string is wrapped as ``{"payload": <string>}``.
+        session_id: Value of the
+            ``X-Amzn-Bedrock-AgentCore-Runtime-Session-Id`` header.
+        bearer_token: OAuth2 access token used in the ``Authorization`` header.
+        endpoint_name: Runtime endpoint qualifier to call.
+        stream: Whether to consume the response as a stream of events.
+
+    Raises:
+        requests.exceptions.RequestException: If the HTTP request fails.
+        SystemExit: Propagated from :func:`get_aws_info` when AWS configuration is
+            missing.
+    """
     escaped_arn = urllib.parse.quote(agent_arn, safe="")
 
     _, region = get_aws_info()
@@ -129,6 +170,10 @@ def get_m2m_token_for_agent(ssm_prefix: str) -> Tuple[str, str]:
 
     Returns:
         Tuple[str, str]: (access_token, agent_card_url)
+
+    Raises:
+        SystemExit: If the SSM lookups or the token request fail. The error is
+            printed to stderr and the process exits with status 1.
     """
     try:
         # Get provider name from SSM

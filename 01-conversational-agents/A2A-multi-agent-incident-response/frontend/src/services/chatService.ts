@@ -2,6 +2,10 @@ import type { StreamingEvent } from '../types'
 
 /**
  * Decode JWT token and extract the "sub" claim
+ *
+ * @param token - Encoded JWT access token (`header.payload.signature`).
+ * @returns The `sub` claim of the payload, or `'unknown'` when the token is
+ * malformed or cannot be decoded.
  */
 function extractSubFromToken(token: string): string {
   try {
@@ -24,6 +28,22 @@ function extractSubFromToken(token: string): string {
 /**
  * Invoke Bedrock AgentCore endpoint with streaming
  * Returns parsed streaming events as JSON objects
+ *
+ * Both server-sent events (`data: ` prefixed lines) and bare JSON lines are
+ * supported; a `data:` payload that is not valid JSON is yielded as
+ * `{ data: <text> }`, and unparseable bare lines are skipped.
+ *
+ * @param agentArn - ARN of the AgentCore runtime to invoke.
+ * @param region - AWS region hosting the runtime.
+ * @param sessionId - Value sent as the
+ * `X-Amzn-Bedrock-AgentCore-Runtime-Session-Id` header.
+ * @param bearerToken - Cognito access token; its `sub` claim is sent as the
+ * `X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actorid` header.
+ * @param prompt - User prompt sent in the request body.
+ * @param actorId - Actor identifier sent in the request body as `actor_id`.
+ * @returns An async generator yielding the parsed streaming events.
+ * @throws Error When the HTTP status is not successful or the response has no
+ * body.
  */
 export async function* invokeAgentStream(
   agentArn: string,

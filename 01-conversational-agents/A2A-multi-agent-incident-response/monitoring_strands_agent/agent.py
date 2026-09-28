@@ -7,6 +7,18 @@ from utils import create_gateway_client
 
 
 class MonitoringAgent:
+    """Strands agent that answers CloudWatch logs, metrics and dashboard questions.
+
+    The agent is backed by an Amazon Bedrock model, uses AgentCore Memory hooks
+    for short- and long-term context, and loads its tools from an AgentCore
+    Gateway (MCP) target.
+
+    Attributes:
+        SUPPORTED_CONTENT_TYPES: Content types the A2A executor may send to this
+            agent.
+        agent: The underlying ``strands.Agent`` instance.
+    """
+
     SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
 
     def __init__(
@@ -18,6 +30,19 @@ class MonitoringAgent:
         session_id: str,
         workload_token: str,
     ):
+        """Build the Strands agent together with its model, memory and tools.
+
+        Args:
+            memory_id: Identifier of the AgentCore Memory resource used to store
+                and retrieve conversation context.
+            model_id: Amazon Bedrock model identifier used by the agent.
+            region_name: AWS region of the Bedrock model and the Memory resource.
+            actor_id: Identifier of the end user, used as the memory actor and to
+                resolve the long-term memory namespaces.
+            session_id: Identifier of the current conversation session.
+            workload_token: AgentCore workload access token used to obtain an
+                OAuth2 token for the gateway.
+        """
         bedrock_model = BedrockModel(model_id=model_id, region_name=region_name)
         memory_client = MemoryClient(region_name=region_name)
 
@@ -42,6 +67,25 @@ class MonitoringAgent:
         )
 
     async def stream(self, query: str, session_id: str):
+        """Stream the agent answer for a query as incremental updates.
+
+        Text chunks produced by the model are forwarded one by one, and a final
+        update carrying the complete response is always emitted last. Errors are
+        not raised to the caller: they are reported as an update that asks for
+        user input instead.
+
+        Args:
+            query: The user question to send to the agent.
+            session_id: Identifier of the current conversation session. It is
+                accepted for interface symmetry with ``invoke`` and is not used
+                to reconfigure the agent.
+
+        Yields:
+            dict: An update with the keys ``is_task_complete`` (bool),
+                ``require_user_input`` (bool) and ``content`` (str). Intermediate
+                updates contain a single text chunk, the final update contains
+                the accumulated response.
+        """
         response = str()
         try:
             async for event in self.agent.stream_async(query):
@@ -68,6 +112,22 @@ class MonitoringAgent:
             }
 
     def invoke(self, query: str, session_id: str):
+        """Run the agent synchronously and return the complete answer.
+
+        Args:
+            query: The user question to send to the agent.
+            session_id: Identifier of the current conversation session. It is
+                accepted for interface symmetry with ``stream`` and is not used
+                to reconfigure the agent.
+
+        Returns:
+            str: The agent response as plain text.
+
+        Raises:
+            TypeError: If the underlying agent call fails. The failure branch
+                raises a formatted string instead of an exception instance,
+                which Python rejects with a ``TypeError``.
+        """
         try:
             response = str(self.agent(query))
 

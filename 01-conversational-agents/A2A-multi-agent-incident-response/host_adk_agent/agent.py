@@ -31,7 +31,21 @@ WEBSEARCH_AGENT_ARN = f"arn:aws:bedrock-agentcore:{region}:{account_id}:runtime/
 
 
 def _create_client_factory(provider_name: str, session_id: str, actor_id: str):
-    """Create a lazy client factory that creates fresh httpx clients on demand."""
+    """Create a lazy client factory that creates fresh httpx clients on demand.
+
+    Args:
+        provider_name: Name of the AgentCore Identity credential provider used to
+            obtain the M2M bearer token for the remote agent.
+        session_id: Value sent as the
+            ``X-Amzn-Bedrock-AgentCore-Runtime-Session-Id`` header.
+        actor_id: Value sent as the
+            ``X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actorid`` header.
+
+    Returns:
+        LazyClientFactory: An object that mimics the ``ClientFactory`` interface
+            expected by ``RemoteA2aAgent`` and builds a new authenticated httpx
+            client for every ``create()`` call.
+    """
 
     def _get_authenticated_client() -> httpx.AsyncClient:
         """Create a fresh httpx client with authentication in current event loop."""
@@ -112,6 +126,21 @@ def _create_client_factory(provider_name: str, session_id: str, actor_id: str):
 
 
 def get_root_agent(session_id: str, actor_id: str):
+    """Build the Google ADK host agent and its two remote A2A sub-agents.
+
+    The monitoring and web search agents are wired as ``RemoteA2aAgent``
+    instances pointing at the agent-card endpoints of their AgentCore runtimes,
+    each with its own authenticated A2A client factory.
+
+    Args:
+        session_id: Session identifier propagated to the remote agents.
+        actor_id: Actor (end user) identifier propagated to the remote agents.
+
+    Returns:
+        Agent: The ADK root agent configured with ``GOOGLE_MODEL_ID``, the shared
+            system prompt and the ``monitor_agent`` and ``websearch_agent``
+            sub-agents.
+    """
     # Create monitor agent
     monitor_agent_card_url = (
         f"https://bedrock-agentcore.{region}.amazonaws.com/runtimes/"
@@ -161,11 +190,22 @@ async def get_agent_and_card(session_id: str, actor_id: str):
     """
     Lazy initialization of the root agent.
     This is called inside the entrypoint where workload identity is available.
+
+    Args:
+        session_id: Session identifier propagated to the remote agents.
+        actor_id: Actor (end user) identifier propagated to the remote agents.
+
+    Returns:
+        tuple: A ``(root_agent, agents_cards)`` pair where ``root_agent`` is the
+            ADK root agent and ``agents_cards`` maps each sub-agent name to a
+            dict with its ``agent_card_url`` and, once resolved, its
+            ``agent_card`` contents.
     """
 
     root_agent = get_root_agent(session_id=session_id, actor_id=actor_id)
 
     async def get_agents_cards():
+        """Resolve and collect the agent cards of every sub-agent."""
         agents_info = {}
         sub_agents = root_agent.sub_agents
 

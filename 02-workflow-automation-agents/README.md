@@ -30,11 +30,12 @@ Agents that run without a user in the loop. They are triggered by system events 
 | [visa-b2b-account-payable-agent](./visa-b2b-account-payable-agent/) | B2B Payments | Advanced | Runtime, Gateway, Policy, Payments; automated invoice matching and ISO 20022 payment file generation via Visa B2B Connect |
 | [enterprise-web-intelligence-agent](./enterprise-web-intelligence-agent/) | Market Intelligence | Intermediate | Runtime, Browser; automated web scraping pipeline implemented twice (LangGraph and Strands) for comparison |
 | [intelligent-event-agent](./intelligent-event-agent/) | General | Beginner | Runtime, Memory, Gateway *(in development, no README yet)* |
+| [it-incident-response-agent](./it-incident-response-agent/) | IT Operations / ITSM | Advanced | Runtime, Gateway + Policy (Cedar), Memory (SUMMARIZATION), Identity, Evaluations, Observability; SNS ticket to Runtime with Knowledge Base and Lambda tools, optional Atlassian MCP |
 | [multi-isv-orchestration](./multi-isv-orchestration/) | Enterprise CRM + ERP | Intermediate | Gateway (multi-target), Identity (Cognito inbound + CustomOauth2 outbound); Salesforce + SAP MCP Server through one Gateway for cross-system queries |
+| [receipts-intelligent-document-processing-agent](./receipts-intelligent-document-processing-agent/) | Expense Management | Advanced | Runtime, Gateway, Memory, Identity, Policy (Cedar on tool input), Observability; S3 to EventBridge to Lambda pipeline with OCR, table parsing, a degradation ladder and human review |
 | [gpu-music-production-agent](./gpu-music-production-agent/) | Media & Entertainment | Advanced | Runtime (EC2 capacity provider, GPU), Memory; a generative audio model runs on the instance GPU and three collocated agents hand files to each other over a shared EBS volume, with a computed verdict that escalates to human review |
 
 
 ## See also
 
 - [01-conversational-agents](../01-conversational-agents/) - agents that interact with users in real time
-- [03-coding-assistants](../03-coding-assistants/) - developer tools and code generation
