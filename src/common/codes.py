@@ -17,6 +17,9 @@ class ErrorCode(IntEnum):
     THROTTLED = 2003
     MISSING_CONFIG = 3001
     BAD_CONFIG = 3002
+    PARSE_ERROR = 4001
+    RENDER_ERROR = 4002
+    GENERATION_ERROR = 4003
 
 
 class FieldCode(IntEnum):
