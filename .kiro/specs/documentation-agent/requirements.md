@@ -19,9 +19,9 @@ additional agent tools without reworking existing code.
 | Decision | Choice |
 | --- | --- |
 | Hero feature | Docstring generation, architected for future features |
-| Code access & publishing | GitHub MCP server (remote), wired as a Strands `MCPClient` |
+| Code access & publishing | GitHub REST API directly, via a `RepoPublisher` port/adapter |
 | Human-in-the-loop | GitHub Pull Requests (agent never writes to the default branch) |
-| File access mode | Fully remote (via GitHub MCP), no local clone dependency |
+| File access mode | Fully remote (via GitHub REST API), no local clone dependency |
 | PR granularity | Configurable, default one PR per run |
 | Orchestration | Amazon Bedrock AgentCore SDK + Strands `Agent` |
 | Model | Claude on Bedrock (already enabled) |
@@ -75,12 +75,12 @@ Request, so that I can review, approve, and merge them through GitHub.
 2. The agent SHALL NOT commit or push directly to the default branch.
 3. WHEN opening a Pull Request THEN the agent SHALL produce a descriptive title and
    a body listing the documented symbols.
-4. The agent SHALL access GitHub exclusively through the remote GitHub MCP server
-   (`https://api.githubcopilot.com/mcp/`) authenticated with a Bearer PAT, wired as
-   a Strands `MCPClient`.
-5. The agent SHALL restrict the exposed GitHub MCP toolset to only those tools
-   required (`get_file_contents`, `get_repository_tree`, `create_branch`,
-   `create_or_update_file`, `push_files`, `create_pull_request`).
+4. The agent SHALL access GitHub exclusively through the GitHub REST API,
+   authenticated with a Bearer PAT, behind a `RepoPublisher` port so the
+   implementation can be swapped (real REST adapter for live, fake for tests).
+5. The REST adapter SHALL use only the endpoints required to read source and open
+   a pull request: get repository tree/contents, get/create git refs (branches),
+   create/update file contents (commits), and create a pull request.
 
 ### Requirement 4 — Fully remote file access
 
@@ -91,7 +91,7 @@ AgentCore.
 #### Acceptance Criteria
 
 1. WHEN the agent needs source THEN it SHALL read file contents and repository
-   structure via GitHub MCP tools (`get_repository_tree`, `get_file_contents`).
+   structure via the GitHub REST API (repository tree and file contents endpoints).
 2. The agent SHALL NOT require a local clone of the repository to operate.
 
 ### Requirement 5 — Configurable PR granularity
@@ -117,8 +117,8 @@ AgentCore, so that it runs as a managed, scalable service.
 2. WHEN invoked THEN the entrypoint SHALL validate that the request `prompt` is a
    string before forwarding it to the agent.
 3. WHEN a valid prompt is received THEN the entrypoint SHALL stream agent events.
-4. The agent logic SHALL be buildable and testable offline (fake MCP + fake LLM)
-   before any AgentCore deployment.
+4. The agent logic SHALL be buildable and testable offline (fake `RepoPublisher` +
+   fake LLM) before any AgentCore deployment.
 
 ### Requirement 7 — Extensibility ("ready for all features")
 
@@ -129,7 +129,7 @@ detection later, so that the agent grows without rework.
 
 1. Each capability SHALL be implemented as a discrete Strands `@tool`.
 2. WHEN a new capability tool is added THEN it SHALL be registered in the agent
-   builder WITHOUT modifying existing tools or the GitHub MCP wiring.
+   builder WITHOUT modifying existing tools or the GitHub REST adapter.
 3. External integrations (LLM, GitHub) SHALL sit behind ports/adapters so
    implementations can be swapped (e.g., fake for tests, Bedrock/GitHub for live).
 
