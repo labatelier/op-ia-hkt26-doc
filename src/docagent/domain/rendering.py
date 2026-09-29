@@ -85,15 +85,27 @@ def _index_definitions(tree: ast.Module):
         for node in body:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 qualified = node.name if prefix == "" else prefix + "." + node.name
-                # Insert after the header line (the line where the body starts).
+                # The docstring becomes the new first statement of the body. Insert
+                # it at the start of the first body statement, backing up past any
+                # decorators on that statement (a decorator's lineno sits above the
+                # def it decorates, so using body[0].lineno directly would split the
+                # decorator from its function and produce invalid syntax).
                 first_body = node.body[0]
-                insert_index = first_body.lineno - 1
+                insert_index = _effective_start(first_body) - 1
                 body_indent = _INDENT * _depth(qualified)
                 index[qualified] = (insert_index, body_indent)
                 visit(node.body, qualified)
 
     visit(tree.body, "")
     return index
+
+
+def _effective_start(node: ast.stmt) -> int:
+    """Return the 1-based line where ``node`` begins, including any decorators."""
+    decorators = getattr(node, "decorator_list", None)
+    if decorators:
+        return min(d.lineno for d in decorators)
+    return node.lineno
 
 
 def _depth(qualified_name: str) -> int:

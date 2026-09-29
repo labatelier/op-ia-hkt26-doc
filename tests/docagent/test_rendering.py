@@ -129,3 +129,44 @@ def test_render_bad_source_returns_err() -> None:
     empty_report = AnalysisReport(file_path="x.py")
     result = render_documented_source("def broken(:\n", [])
     assert result.is_err()
+
+
+DECORATED = '''from abc import ABC, abstractmethod
+
+
+class Clock(ABC):
+    @abstractmethod
+    def now(self):
+        raise NotImplementedError
+'''
+
+
+def test_class_with_decorated_first_method_reparses() -> None:
+    # Regression: a class whose first body statement is a decorated method must
+    # not have its docstring inserted between the decorator and the def.
+    report, proposals = _proposals_for(DECORATED, "src/clock.py")
+    result = render_documented_source(DECORATED, proposals)
+    assert result.is_ok(), result
+    tree = ast.parse(result.value)  # must not raise
+    cls = [n for n in tree.body if isinstance(n, ast.ClassDef)][0]
+    assert ast.get_docstring(cls) is not None
+    method = cls.body[[i for i, n in enumerate(cls.body)
+                       if isinstance(n, ast.FunctionDef)][0]]
+    assert ast.get_docstring(method) is not None
+
+
+def test_multiline_docstring_in_class_and_method_reparses() -> None:
+    # Mimics real Bedrock output with Args/Returns sections.
+    report = analyze_source(DECORATED, "src/clock.py").value
+    proposals = []
+    for t in report.targets:
+        proposals.append(
+            DocProposal(
+                target=t,
+                docstring="Summary line.\n\nReturns:\n    datetime: the value.",
+            )
+        )
+    result = render_documented_source(DECORATED, proposals)
+    assert result.is_ok(), result
+    ast.parse(result.value)
+    assert analyze_source(result.value, "src/clock.py").value.missing_count() == 0
